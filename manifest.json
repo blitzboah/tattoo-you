@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "tattoo-you",
+  "version": "1.0",
+  "permissions": ["contextMenus", "storage", "scripting"],
+  "host_permissions": [
+    "https://memedb69.vercel.app/*",
+    "http://localhost:5173/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://memedb69.vercel.app/*",
+        "http://localhost:5173/*"
+      ],
+      "js": ["content-import.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
+    
