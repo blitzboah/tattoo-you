@@ -1,4 +1,3 @@
-
 (async function importQueuedMemes() {
   // check if extension storage API exists
   if (!window.chrome || !chrome.storage || !chrome.storage.local) return;

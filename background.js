@@ -31,7 +31,7 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
         console.log("Meme queued in extension storage");
       });
     } catch (err) {
-      console.error("Failed to save image:", err);
+      console.log("Failed to save image:", err);
     }
   }
 });
