@@ -71,6 +71,11 @@ body {
   height: 24px;
   background: #ef4444b3;
   z-index: 10;
+  opacity: 0;
+}
+
+.meme-container:hover .delete-btn {
+  opacity: 1;
 }
 
 .delete-btn:hover {
