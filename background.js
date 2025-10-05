@@ -13,34 +13,48 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
     try {
       const response = await fetch(info.srcUrl);
       const blob = await response.blob();
-      const base64 = await blobToBase64(blob);
 
       const meme = {
         id: Date.now(),
         name: "",
         description: "",
-        imageType: blob.type,
-        imageData: base64,
+        imageBlob: blob,
         createdAt: Date.now()
       };
 
-      chrome.storage.local.get(["queuedMemes"], (res) => {
-        const queued = res.queuedMemes || [];
-        queued.push(meme);
-        chrome.storage.local.set({ queuedMemes: queued });
-        console.log("Meme queued in extension storage");
-      });
+      await saveToMemeDB(meme);
+      console.log("meme saved!");
     } catch (err) {
-      console.log("Failed to save image:", err);
+      console.error("Failed to save image:", err);
     }
   }
 });
 
-function blobToBase64(blob) {
+function saveToMemeDB(meme) {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result.split(",")[1]);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
+    const request = indexedDB.open("memeDB", 1);
+
+    request.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains("memes")) {
+        db.createObjectStore("memes", { keyPath: "id" });
+      }
+    };
+
+    request.onsuccess = (e) => {
+      const db = e.target.result;
+      const tx = db.transaction("memes", "readwrite");
+      const store = tx.objectStore("memes");
+      store.put(meme);
+
+      tx.oncomplete = () => {
+        db.close();
+        resolve();
+      };
+
+      tx.onerror = (err) => reject(err);
+    };
+
+    request.onerror = (e) => reject(e.target.error);
   });
 }
