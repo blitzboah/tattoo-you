@@ -19,23 +19,49 @@ body {
   position: relative;
   width: 200px;
   height: 200px;
+  cursor: pointer;
 }
 
 .meme-container img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: fill;
   display: block;
 }
 
-.copy-btn,
+.copy-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  background: #22c55eb3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.copy-overlay img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.meme-container:hover .copy-overlay {
+  opacity: 1;
+}
+
 .delete-btn {
   position: absolute;
   top: 5px;
+  right: 5px;
   color: #fff;
   border: none;
   padding: 6px;
-  border-radius: 4px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -43,20 +69,8 @@ body {
   transition: all 0.2s ease;
   width: 24px;
   height: 24px;
-}
-
-.copy-btn {
-  left: 5px;
-  background: #22c55eb3;
-}
-
-.delete-btn {
-  right: 5px;
   background: #ef4444b3;
-}
-
-.copy-btn:hover {
-  transform: scale(1.1);
+  z-index: 10;
 }
 
 .delete-btn:hover {

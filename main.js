@@ -66,12 +66,10 @@ async function renderMemes() {
       const img = document.createElement("img");
       img.src = URL.createObjectURL(meme.imageBlob);
       img.alt = meme.name || "meme";
+      img.title = "Click to copy";
+      img.style.cursor = "pointer";
 
-      const copyBtn = document.createElement("button");
-      copyBtn.className = "copy-btn";
-      copyBtn.innerHTML = `<img src="copy-icon.svg" alt="Copy">`;
-      copyBtn.title = "Copy";
-      copyBtn.onclick = async () => {
+      img.onclick = async () => {
         try {
           const blobToCopy = await convertToPng(meme.imageBlob);
           await navigator.clipboard.write([
@@ -83,17 +81,22 @@ async function renderMemes() {
         }
       };
 
+      const copyOverlay = document.createElement("div");
+      copyOverlay.className = "copy-overlay";
+      copyOverlay.innerHTML = `<img src="copy-icon.svg" alt="Copy">`;
+
       const delBtn = document.createElement("button");
       delBtn.className = "delete-btn";
       delBtn.innerHTML = `<img src="delete-icon.svg" alt="Delete">`;
       delBtn.title = "Delete";
-      delBtn.onclick = async () => {
+      delBtn.onclick = async (e) => {
+        e.stopPropagation();
         await deleteMeme(meme.id);
         renderMemes();
       };
 
       memeDiv.appendChild(img);
-      memeDiv.appendChild(copyBtn);
+      memeDiv.appendChild(copyOverlay);
       memeDiv.appendChild(delBtn);
 
       container.appendChild(memeDiv);
